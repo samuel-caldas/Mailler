@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Documento sem título</title>
+<script type="text/javascript">
+try {
+    xmlhttp = new XMLHttpRequest();
+} catch (ee) {
+    try {
+        xmlhttp = new ActiveXObject('Msxml2.XMLHTTP');
+    } catch (e) {
+        try {
+            xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
+        } catch (E) {
+            xmlhttp = false;
+        }
+    }
+}
+
+function carrega(_idContainer, _endereco) {
+    xmlhttp.open('GET', _endereco, true);
+    xmlhttp.onreadystatechange = function () {
+
+        if (xmlhttp.readyState == 4) {
+            retorno = xmlhttp.responseText;
+            var tag_container = document.getElementById(_idContainer);
+            tag_container.innerHTML = retorno;
+            extraiScript(retorno);
+        }
+    }
+    xmlhttp.send(null)
+}
+
+// <![CDATA[
+function extraiScript(texto) {
+    // inicializa o inicio
+    var ini = 0;
+    // loop enquanto achar um script
+    while (ini != -1) {
+        // procura uma tag de script
+        ini = texto.indexOf('<script', ini);
+        // se encontrar
+        if (ini >= 0) {
+            // define o inicio para depois do fechamento dessa tag
+            ini = texto.indexOf('>', ini) + 1;
+            // procura o final do script
+            var fim = texto.indexOf('</' + 'script>', ini);
+            // extrai apenas o script
+            codigo = texto.substring(ini, fim);
+            // executa o script
+            eval(codigo);
+            /**********************
+             * Alterado por Micox - micoxjcg@yahoo.com.br
+             * Alterei pois com o eval não executava funções.
+             ***********************/
+            novo = document.createElement("script");
+            novo.text = codigo;
+            document.body.appendChild(novo);
+        }
+    }
+}
+</script>
+</head>
+
+<body>
+<a href="teste.html" >Carrega a página</a>
+<div id="conteudo">Aqui será carregado</div>
+</body>
+</html>
